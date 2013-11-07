@@ -8,9 +8,14 @@ from django.contrib.sites.models import Site
 from datetime import timedelta, datetime as dt
 from mezzanine.utils.sites import current_site_id
 from mezzanine.conf import settings
-
+import os
+from datetime import date
 def _get_current_domain():
 	return Site.objects.get(id=current_site_id()).domain
+def get_image_path(instance, filename):
+    path= os.path.join('', str(instance.id), filename)
+    print path
+    return path
 
 class Event(Page, RichText):
 	date = models.DateField()
@@ -22,7 +27,8 @@ class Event(Page, RichText):
 	lat = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True, verbose_name="Latitude", help_text="Calculated automatically if mappable location is set.")
 	lon = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True, verbose_name="Longitude", help_text="Calculated automatically if mappable location is set.")
 	rsvp = models.TextField(blank=True, help_text="RSVP information. Leave blank if not relevant. Emails will be converted into links.")
-
+	banner_photo = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+	small_banner_photo = models.ImageField(upload_to=get_image_path, blank=True, null=True)
 	def speakers_list(self):
 		return [x for x in self.speakers.split("\n") if x.strip() != ""]
 
@@ -71,7 +77,16 @@ class Event(Page, RichText):
 			self.in_menus = ""
 		
 		super(Event, self).save(*args, **kwargs)
-	
+	@property
+	def is_past_due(self):
+		if date.today() > self.date:
+			return True
+		return False	
+	@property
+	def is_future_due(self):
+		if date.today() <= self.date:
+			return True
+		return False	
 	class Meta:
 		verbose_name = "Event"
 
@@ -83,3 +98,24 @@ class EventContainer (Page):
 	def events(self):
 		"""Convenience method for getting at all events in a container, in the right order, from a template."""
 		return self.children.published().order_by('_order')
+	def future_events(self):
+		events = self.children.published().order_by('_order')
+		event_list=[]
+		for event in events:
+			if event.event.is_future_due:
+				event_list.append(event)
+		return event_list
+	@property
+	def has_past_due(self):
+		events = self.events()
+		for event in events:
+			if event.event.is_past_due:
+				return True
+		return False
+	@property
+	def has_future_due(self):
+		events = self.events()
+		for event in events:
+			if event.event.is_future_due:
+				return True
+		return False
