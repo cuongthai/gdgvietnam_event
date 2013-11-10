@@ -21,6 +21,9 @@ class Migration(SchemaMigration):
             ('lat', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=10, decimal_places=7, blank=True)),
             ('lon', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=10, decimal_places=7, blank=True)),
             ('rsvp', self.gf('django.db.models.fields.TextField')(blank=True)),
+	    ('banner_photo', self.gf('django.db.models.fields.ImageField')(blank=True)),
+            ('small_banner_photo', self.gf('django.db.models.fields.ImageField')(blank=True)),	
+            ('live_youtube_link', self.gf('django.db.models.fields.TextField')(blank=True)),
         ))
         db.send_create_signal('mezzanine_events', ['Event'])
 

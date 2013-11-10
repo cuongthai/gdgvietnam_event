@@ -29,6 +29,8 @@ class Event(Page, RichText):
 	rsvp = models.TextField(blank=True, help_text="RSVP information. Leave blank if not relevant. Emails will be converted into links.")
 	banner_photo = models.ImageField(upload_to=get_image_path, blank=True, null=True)
 	small_banner_photo = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+	live_youtube_link = models.TextField(blank=True, help_text="Ongoing event will be post in homepage.")
+
 	def speakers_list(self):
 		return [x for x in self.speakers.split("\n") if x.strip() != ""]
 
@@ -84,7 +86,12 @@ class Event(Page, RichText):
 		return False	
 	@property
 	def is_future_due(self):
-		if date.today() <= self.date:
+		if date.today() < self.date:
+			return True
+		return False	
+	@property
+	def is_ongoing(self):
+		if date.today() == self.date:
 			return True
 		return False	
 	class Meta:

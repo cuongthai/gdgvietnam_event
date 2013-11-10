@@ -10,7 +10,7 @@ class EventAdmin (PageAdmin):
 	fieldsets = (
 		deepcopy(PageAdmin.fieldsets[0]),
 		("Event details",{
-			'fields': ('content', 'date', ('start_time', 'end_time'), 'location', 'mappable_location', ('lat', 'lon'), 'speakers', 'rsvp','banner_photo','small_banner_photo')
+			'fields': ('content', 'date', ('start_time', 'end_time'), 'location', 'mappable_location', ('lat', 'lon'), 'speakers', 'rsvp','banner_photo','small_banner_photo','live_youtube_link')
 		}),
 		deepcopy(PageAdmin.fieldsets[1]),
 	)
