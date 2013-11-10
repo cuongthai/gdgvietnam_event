@@ -27,8 +27,8 @@ class Event(Page, RichText):
 	lat = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True, verbose_name="Latitude", help_text="Calculated automatically if mappable location is set.")
 	lon = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True, verbose_name="Longitude", help_text="Calculated automatically if mappable location is set.")
 	rsvp = models.TextField(blank=True, help_text="RSVP information. Leave blank if not relevant. Emails will be converted into links.")
-	banner_photo = models.ImageField(upload_to=get_image_path, blank=True, null=True)
-	small_banner_photo = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+	banner_photo = models.ImageField(upload_to=get_image_path, blank=True, null=True, help_text="960px : 300px")
+	small_banner_photo = models.ImageField(upload_to=get_image_path, blank=True, null=True, help_text="width : height = 4:3")
 	live_youtube_link = models.TextField(blank=True, help_text="Ongoing event will be post in homepage.")
 
 	def speakers_list(self):
